@@ -302,17 +302,7 @@ lines(times, pred.exp, col="red", lwd=3)
 legend("topright", bty="n", legend=paste("R2 is", format(summary(exp.lm)$r.squared,digits=4)), cex  = 2.0)
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-51.png) 
-
-```r
-plot(df$days, df$sum, xaxt='n', pch=16, main="logarithmic", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.log, col = "red", lwd = 3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(log.lm)$r.squared,digits=4)), cex = 2.0)
-```
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-52.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
 
 ## Polynomial (quadratic)
 
@@ -330,17 +320,7 @@ lines(times, pred.poly2, col="red", lwd=3)
 legend("topright", bty="n", legend=paste("R2 is", format(summary(poly2.lm)$r.squared,digits=4)), cex  = 2.0)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-61.png) 
-
-```r
-plot(df$days, df$sum, xaxt='n', pch=16, main="logarithmic", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.log, col = "red", lwd = 3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(log.lm)$r.squared,digits=4)), cex = 2.0)
-```
-
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-62.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
 
 ## Polynomial (cubic)
 
@@ -359,10 +339,6 @@ legend("topright", bty="n", legend=paste("R2 is", format(summary(poly3.lm)$r.squ
 ```
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
-
-```r
-##
-```
 
 ## Extracting R squared and Coefficients from models
 
