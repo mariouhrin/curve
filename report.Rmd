@@ -16,8 +16,8 @@ library(dplyr)
 df <- read.csv("./sample_data.csv")
 
 ## table of attributes
-meaning <- c("number of campaigns", "Sum of revenue", "number of days")
-features <- c("c1/c2/c3", "sum", "days") 
+meaning <- c("number of campaigns", "number of days", "Sum of revenue")
+features <- c("c1/c2/c3","days", "sum") 
 table.df = cbind(features, meaning)
 htmlTable(table.df)
 

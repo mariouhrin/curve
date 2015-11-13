@@ -17,8 +17,8 @@ library(dplyr)
 df <- read.csv("./sample_data.csv")
 
 ## table of attributes
-meaning <- c("number of campaigns", "Sum of revenue", "number of days")
-features <- c("c1/c2/c3", "sum", "days") 
+meaning <- c("number of campaigns", "number of days", "Sum of revenue")
+features <- c("c1/c2/c3","days", "sum") 
 table.df = cbind(features, meaning)
 htmlTable(table.df)
 ```
@@ -36,12 +36,12 @@ htmlTable(table.df)
 <td style='text-align: center;'>number of campaigns</td>
 </tr>
 <tr>
-<td style='text-align: center;'>sum</td>
-<td style='text-align: center;'>Sum of revenue</td>
+<td style='text-align: center;'>days</td>
+<td style='text-align: center;'>number of days</td>
 </tr>
 <tr>
-<td style='border-bottom: 2px solid grey; text-align: center;'>days</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>number of days</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>sum</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>Sum of revenue</td>
 </tr>
 </tbody>
 </table>
@@ -59,8 +59,8 @@ htmlTable(df)
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c1</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c2</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c3</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>sum</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>days</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>sum</th>
 </tr>
 </thead>
 <tbody>
@@ -69,96 +69,96 @@ htmlTable(df)
 <td style='text-align: center;'>1</td>
 <td style='text-align: center;'>5</td>
 <td style='text-align: center;'>5</td>
-<td style='text-align: center;'>11</td>
 <td style='text-align: center;'>1</td>
+<td style='text-align: center;'>3.67</td>
 </tr>
 <tr>
 <td style='text-align: left;'>2</td>
 <td style='text-align: center;'>3</td>
 <td style='text-align: center;'>6</td>
 <td style='text-align: center;'>6</td>
-<td style='text-align: center;'>15</td>
 <td style='text-align: center;'>2</td>
+<td style='text-align: center;'>5</td>
 </tr>
 <tr>
 <td style='text-align: left;'>3</td>
 <td style='text-align: center;'>13.8</td>
 <td style='text-align: center;'>8</td>
 <td style='text-align: center;'>33</td>
-<td style='text-align: center;'>54.8</td>
 <td style='text-align: center;'>3</td>
+<td style='text-align: center;'>18.27</td>
 </tr>
 <tr>
 <td style='text-align: left;'>4</td>
 <td style='text-align: center;'>20.8</td>
 <td style='text-align: center;'>18.8</td>
 <td style='text-align: center;'>37</td>
-<td style='text-align: center;'>76.6</td>
 <td style='text-align: center;'>4</td>
+<td style='text-align: center;'>25.53</td>
 </tr>
 <tr>
 <td style='text-align: left;'>5</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>25.8</td>
 <td style='text-align: center;'>42</td>
-<td style='text-align: center;'>67.8</td>
 <td style='text-align: center;'>5</td>
+<td style='text-align: center;'>33.9</td>
 </tr>
 <tr>
 <td style='text-align: left;'>6</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>34.8</td>
 <td style='text-align: center;'>50</td>
-<td style='text-align: center;'>84.8</td>
 <td style='text-align: center;'>6</td>
+<td style='text-align: center;'>42.4</td>
 </tr>
 <tr>
 <td style='text-align: left;'>7</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>41.8</td>
 <td style='text-align: center;'>57</td>
-<td style='text-align: center;'>98.8</td>
 <td style='text-align: center;'>7</td>
+<td style='text-align: center;'>49.4</td>
 </tr>
 <tr>
 <td style='text-align: left;'>8</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>45.8</td>
 <td style='text-align: center;'>58</td>
-<td style='text-align: center;'>103.8</td>
 <td style='text-align: center;'>8</td>
+<td style='text-align: center;'>51.9</td>
 </tr>
 <tr>
 <td style='text-align: left;'>9</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>50.8</td>
 <td style='text-align: center;'></td>
-<td style='text-align: center;'>50.8</td>
 <td style='text-align: center;'>9</td>
+<td style='text-align: center;'>50.8</td>
 </tr>
 <tr>
 <td style='text-align: left;'>10</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>58.8</td>
 <td style='text-align: center;'></td>
-<td style='text-align: center;'>58.8</td>
 <td style='text-align: center;'>10</td>
+<td style='text-align: center;'>58.8</td>
 </tr>
 <tr>
 <td style='text-align: left;'>11</td>
 <td style='text-align: center;'></td>
 <td style='text-align: center;'>65.8</td>
 <td style='text-align: center;'></td>
-<td style='text-align: center;'>65.8</td>
 <td style='text-align: center;'>11</td>
+<td style='text-align: center;'>65.8</td>
 </tr>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>12</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'></td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'></td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>12</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
 </tr>
 </tbody>
 </table>
@@ -212,16 +212,16 @@ htmlTable(stats)
 <tbody>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>1</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.234</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.158</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>26.093</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>3.062</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.111</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.959</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.955</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>4.693</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>232.882</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>2</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>-55.074</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>116.147</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>117.602</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>6808.673</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>-34.485</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>74.97</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>76.425</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>220.204</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>10</td>
 </tr>
 </tbody>
@@ -249,18 +249,18 @@ htmlTable(coeff)
 <tr>
 <td style='text-align: left;'>1</td>
 <td style='text-align: center;'>(Intercept)</td>
-<td style='text-align: center;'>38.082</td>
-<td style='text-align: center;'>16.059</td>
-<td style='text-align: center;'>2.371</td>
-<td style='text-align: center;'>0.039</td>
+<td style='text-align: center;'>0.431</td>
+<td style='text-align: center;'>2.888</td>
+<td style='text-align: center;'>0.149</td>
+<td style='text-align: center;'>0.884</td>
 </tr>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>2</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>days</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>3.818</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>2.182</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>1.75</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.111</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>5.988</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.392</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>15.26</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0</td>
 </tr>
 </tbody>
 </table>
@@ -380,58 +380,58 @@ htmlTable(result.table)
 <tr>
 <td style='text-align: center;'>linear</td>
 <td style='text-align: center;'>days</td>
-<td style='text-align: center;'>3.818</td>
-<td style='text-align: center;'>38.082</td>
-<td style='text-align: center;'>0.234</td>
+<td style='text-align: center;'>5.988</td>
+<td style='text-align: center;'>0.431</td>
+<td style='text-align: center;'>0.959</td>
 </tr>
 <tr>
 <td style='text-align: center;'>logarithmic</td>
 <td style='text-align: center;'>log(days)</td>
-<td style='text-align: center;'>25.388</td>
-<td style='text-align: center;'>20.614</td>
-<td style='text-align: center;'>0.455</td>
+<td style='text-align: center;'>28.274</td>
+<td style='text-align: center;'>-7.738</td>
+<td style='text-align: center;'>0.939</td>
 </tr>
 <tr>
 <td style='text-align: center;'>exponential</td>
 <td style='text-align: center;'>days</td>
-<td style='text-align: center;'>0.115</td>
-<td style='text-align: center;'>3.227</td>
-<td style='text-align: center;'>0.351</td>
+<td style='text-align: center;'>0.238</td>
+<td style='text-align: center;'>1.831</td>
+<td style='text-align: center;'>0.769</td>
 </tr>
 <tr>
 <td style='text-align: center;'>polynomial2</td>
 <td style='text-align: center;'>poly(days, 2)1</td>
-<td style='text-align: center;'>45.659</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.714</td>
+<td style='text-align: center;'>71.611</td>
+<td style='text-align: center;'>39.356</td>
+<td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
 <td style='text-align: center;'>polynomial2</td>
 <td style='text-align: center;'>poly(days, 2)2</td>
-<td style='text-align: center;'>-65.289</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.714</td>
+<td style='text-align: center;'>-11.641</td>
+<td style='text-align: center;'>39.356</td>
+<td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
 <td style='text-align: center;'>polynomial3</td>
 <td style='text-align: center;'>poly(days, 3)1</td>
-<td style='text-align: center;'>45.659</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.761</td>
+<td style='text-align: center;'>71.611</td>
+<td style='text-align: center;'>39.356</td>
+<td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
 <td style='text-align: center;'>polynomial3</td>
 <td style='text-align: center;'>poly(days, 3)2</td>
-<td style='text-align: center;'>-65.289</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.761</td>
+<td style='text-align: center;'>-11.641</td>
+<td style='text-align: center;'>39.356</td>
+<td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: center;'>polynomial3</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>poly(days, 3)3</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>20.46</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>62.9</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.761</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.376</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>39.356</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.984</td>
 </tr>
 </tbody>
 </table>
@@ -461,28 +461,20 @@ htmlTable(as.matrix(best))
 </thead>
 <tbody>
 <tr>
-<td style='text-align: left;'>6</td>
-<td style='text-align: center;'>polynomial3</td>
-<td style='text-align: center;'>poly(days, 3)1</td>
-<td style='text-align: center;'>45.659</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.761</td>
+<td style='text-align: left;'>4</td>
+<td style='text-align: center;'>polynomial2</td>
+<td style='text-align: center;'>poly(days, 2)1</td>
+<td style='text-align: center;'>71.611</td>
+<td style='text-align: center;'>39.356</td>
+<td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
-<td style='text-align: left;'>7</td>
-<td style='text-align: center;'>polynomial3</td>
-<td style='text-align: center;'>poly(days, 3)2</td>
-<td style='text-align: center;'>-65.289</td>
-<td style='text-align: center;'>62.9</td>
-<td style='text-align: center;'>0.761</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>8</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>polynomial3</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>poly(days, 3)3</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>20.46</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>62.9</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.761</td>
+<td style='border-bottom: 2px solid grey; text-align: left;'>5</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>polynomial2</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>poly(days, 2)2</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>-11.641</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>39.356</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.984</td>
 </tr>
 </tbody>
 </table>
