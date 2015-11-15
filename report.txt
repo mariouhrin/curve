@@ -49,16 +49,19 @@ htmlTable(table.df, align='c|c')
 </table>
 
 ```r
-kable(table.df, format = "markdown", align="c")
+kable(head(iris), format = "markdown", align="c")
 ```
 
 
 
-|   attribute    |               meaning               |
-|:--------------:|:-----------------------------------:|
-|    c1/c2/c3    |         number of campaign          |
-|      days      |           number of days            |
-| cumsum_revenue | Cumulative sum of campaigns revenue |
+| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species |
+|:------------:|:-----------:|:------------:|:-----------:|:-------:|
+|     5.1      |     3.5     |     1.4      |     0.2     | setosa  |
+|     4.9      |     3.0     |     1.4      |     0.2     | setosa  |
+|     4.7      |     3.2     |     1.3      |     0.2     | setosa  |
+|     4.6      |     3.1     |     1.5      |     0.2     | setosa  |
+|     5.0      |     3.6     |     1.4      |     0.2     | setosa  |
+|     5.4      |     3.9     |     1.7      |     0.4     | setosa  |
 
 ```r
 ## show data
@@ -175,27 +178,6 @@ htmlTable(df, align='c|c|c|c|c')
 </tr>
 </tbody>
 </table>
-
-```r
-kable(df, format = "markdown", align="c")
-```
-
-
-
-|  c1  |  c2  | c3 | days | cumsum_revenue |
-|:----:|:----:|:--:|:----:|:--------------:|
-| 1.0  | 5.0  | 5  |  1   |      3.67      |
-| 3.0  | 6.0  | 6  |  2   |      5.00      |
-| 13.8 | 8.0  | 33 |  3   |     18.27      |
-| 20.8 | 18.8 | 37 |  4   |     25.53      |
-|  NA  | 25.8 | 42 |  5   |     33.90      |
-|  NA  | 34.8 | 50 |  6   |     42.40      |
-|  NA  | 41.8 | 57 |  7   |     49.40      |
-|  NA  | 45.8 | 58 |  8   |     51.90      |
-|  NA  | 50.8 | NA |  9   |     50.80      |
-|  NA  | 58.8 | NA |  10  |     58.80      |
-|  NA  | 65.8 | NA |  11  |     65.80      |
-|  NA  | 66.8 | NA |  12  |     66.80      |
 
 ## Curve fitting functions
 
