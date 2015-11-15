@@ -1,24 +1,26 @@
 
-# Ximad Curves
+# Curve fitting example
 
 
 ```r
 library(htmlTable)
-library(pixiedust)
 library(broom)
+library(pixiedust)
 library(dplyr)
+library(hash)
+library(data.table)
+options(scipen = 100000)
 ```
 
 ## Show data
 
 ```r
 ## read data 
+df <- fread("./sample_data.csv")
 
-df <- read.csv("./sample_data.csv")
-
-## table of attributes
-meaning <- c("number of campaigns", "number of days", "Sum of revenue")
-features <- c("c1/c2/c3","days", "sum") 
+## attribute description simple table
+meaning <- c("number of campaign", "number of days", "Cumulative sum of campaigns revenue")
+features <- c("c1/c2/c3","days", "cumsum_revenue") 
 table.df = cbind(features, meaning)
 htmlTable(table.df)
 ```
@@ -33,22 +35,21 @@ htmlTable(table.df)
 <tbody>
 <tr>
 <td style='text-align: center;'>c1/c2/c3</td>
-<td style='text-align: center;'>number of campaigns</td>
+<td style='text-align: center;'>number of campaign</td>
 </tr>
 <tr>
 <td style='text-align: center;'>days</td>
 <td style='text-align: center;'>number of days</td>
 </tr>
 <tr>
-<td style='border-bottom: 2px solid grey; text-align: center;'>sum</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>Sum of revenue</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>cumsum_revenue</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>Cumulative sum of campaigns revenue</td>
 </tr>
 </tbody>
 </table>
 
 ```r
-## showing  data
-
+## show data
 htmlTable(df)
 ```
 
@@ -60,7 +61,7 @@ htmlTable(df)
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c2</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c3</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>days</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>sum</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>cumsum_revenue</th>
 </tr>
 </thead>
 <tbody>
@@ -163,325 +164,375 @@ htmlTable(df)
 </tbody>
 </table>
 
+## Curve fitting functions
+
+
+
+```r
+## timeseries for all curves
+times = seq(0, 60, 0.1)
+
+
+## CURVE FUNCTIONS 
+
+linear <- function(y) {
+
+    df$cumsum_revenue = y
+    lin.lm <- lm(cumsum_revenue ~ days, data = df)
+    pred.lin <- predict(lin.lm, list(days=times))
+    return(list(lin.lm, pred.lin))
+}
+
+
+logarithmic <- function (y) {
+    
+    df$cumsum_revenue = y
+    log.lm <- lm(cumsum_revenue ~ log(days), data = df)
+    pred.log <- predict(log.lm, list(days=times))
+    return(list(log.lm, pred.log))
+}
+
+
+exponential <- function (y) {
+    
+    df$cumsum_revenue = y
+    exp.lm <- lm(log(cumsum_revenue) ~ days, data = df)
+    pred.exp <- exp(predict(exp.lm, list(days=times)))
+    return(list(exp.lm, pred.exp))
+}
+
+
+polynomial_2 <- function (y) {
+
+    df$cumsum_revenue = y
+    poly2.lm <- lm(cumsum_revenue ~ poly(days, 2), data = df)
+    pred.poly2 <- predict(poly2.lm, list(days=times))
+    return(list(poly2.lm, pred.poly2))
+}
+
+
+polynomial_3 <- function (y) {
+
+    df$cumsum_revenue = y
+    poly3.lm <- lm(cumsum_revenue ~ poly(days, 3), data = df)
+    pred.poly3 <- predict(poly3.lm, list(days=times))
+    return(list(poly3.lm, pred.poly3))
+}
+
+
+
+models = list("linear" = linear, 
+              "logarithmic" = logarithmic,
+              "exponential" = exponential, 
+              "polynomial_2" = polynomial_2, 
+              "polynomial_3" = polynomial_3)
+
+models$linear(df, df$cumsum_revenue, df$days, times)
+```
+
+```
+## Error in models$linear(df, df$cumsum_revenue, df$days, times): unused arguments (df$cumsum_revenue, df$days, times)
+```
+
+## Save curves plot into list
+
+
+```r
+## create list for saving plots as object
+plots = list()
+
+## create list for assigning models name
+name.list = list()
+
+
+## loop every curve plot and save it as object into list
+
+for (i in seq(models)) {
+
+    # model name
+    name = names(models)[i]
+
+    # assign model name into list
+    name.list[[i]] = name
+
+    # function of model
+    fun.model = models[[name]]
+
+    # assign model coefficients and statistics 
+    mod.val = fun.model(df$cumsum_revenue) [[1]]
+
+    # assign prediction values
+    pred.val = fun.model(df$cumsum_revenue) [[2]]
+
+    # set the max ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
+
+    # set the min ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.min = min(not.infinite)
+
+    # extrapolation plot
+    plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
+         ylab = "Cumulative campaign revenue", xlab="Number of days", 
+         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
+         xlim=c(0,60), col = '#FF00007F', lwd=4) 
+    # add grid
+    grid(NA, NULL)
+    # add points from original data
+    points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.8)
+    # modificate the plot axis
+    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
+    # add legend to a plot
+    legend("topright", bty="n", 
+           legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
+           as.expression(bquote(
+           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
+           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
+           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
+           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
+    # save every plot into list 'plots'
+    plots[[i]] = recordPlot()
+}   
+```
+
+```r
+## assign models name into list 'plots'
+names(plots) = unlist(name.list)
+```
+
 ## Linear model
 
 
-
-
 ```r
-## model
-
-times = seq(0, 60, 0.1)
-lin.lm <- lm(sum ~ days, data = df)
-
-## plot 
-
-plot(df$days, df$sum, xaxt='n', pch=16, main="linear", ylab = "Sum of revenue", xlab="days", cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(lin.lm, col="red", lwd=3)
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-legend("topright", bty="n", legend=paste("R2 is", format(summary(lin.lm)$r.squared,digits=4)), cex = 2.0)
+plots[["linear"]]
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
-
-```r
-## table of statistics
-
-stats = round(glance(lin.lm), 3)
-htmlTable(stats)
-```
-
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey;'> </th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>r.squared</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>adj.r.squared</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>sigma</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>statistic</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>p.value</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>df</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>logLik</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>AIC</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>BIC</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>deviance</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>df.residual</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>1</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.959</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.955</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>4.693</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>232.882</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>2</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>-34.485</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>74.97</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>76.425</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>220.204</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>10</td>
-</tr>
-</tbody>
-</table>
-
-```r
-## table of coefficients
-
-coeff = as.data.frame(dust(lin.lm) %>% sprinkle(round = 3))
-htmlTable(coeff)
-```
-
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey;'> </th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>term</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>estimate</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>std.error</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>statistic</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='text-align: left;'>1</td>
-<td style='text-align: center;'>(Intercept)</td>
-<td style='text-align: center;'>0.431</td>
-<td style='text-align: center;'>2.888</td>
-<td style='text-align: center;'>0.149</td>
-<td style='text-align: center;'>0.884</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>2</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>days</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>5.988</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.392</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>15.26</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0</td>
-</tr>
-</tbody>
-</table>
-
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
 ## Logarithmic model
 
 
 
 ```r
-## model
-log.lm <- lm(sum ~ log(days), data = df)
-pred.log <- predict(log.lm, list(days=times))
-
-## plot
-plot(df$days, df$sum, xaxt='n', pch=16, main="logarithmic", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.log, col = "red", lwd = 3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(log.lm)$r.squared,digits=4)), cex = 2.0)
+plots[["logarithmic"]]
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ## Exponential model
 
 
 
 ```r
-## model (power)
-exp.lm <- lm(log(sum) ~ days, data =df)
-pred.exp <- exp(predict(exp.lm, list(days=times)))
-
-## plot
-plot(df$days, df$sum, xaxt='n', pch=16, main="exponential", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.exp, col="red", lwd=3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(exp.lm)$r.squared,digits=4)), cex  = 2.0)
+plots[["exponential"]]
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
 ## Polynomial (quadratic)
 
 
 ```r
-## model 2th degree
-poly2.lm <- lm(sum ~ poly(days, 2), data =df)
-pred.poly2 <- predict(poly2.lm, list(days=times))
-
-## plot
-plot(df$days, df$sum, xaxt='n', pch=16, main="polynomial - quadratic", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.poly2, col="red", lwd=3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(poly2.lm)$r.squared,digits=4)), cex  = 2.0)
+plots[["polynomial_2"]]
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
 ## Polynomial (cubic)
 
 
 ```r
-## model 3th degree
-poly3.lm <- lm(sum ~ poly(days, 3), data =df)
-pred.poly3 <- predict(poly3.lm, list(days=times))
-
-## plot
-plot(df$days, df$sum, xaxt='n', pch=16, main="polynomial - cubic", ylab = "Sum of revenue", xlab="days",cex.lab=1.5, cex.main=1.5, xlim=c(0,60))
-abline(v=length(df$days))
-axis(1, at=seq(0,60,5), labels=seq(0,60,5))
-lines(times, pred.poly3, col="red", lwd=3)
-legend("topright", bty="n", legend=paste("R2 is", format(summary(poly3.lm)$r.squared,digits=4)), cex  = 2.0)
+plots[["polynomial_3"]]
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 
-## Extracting R squared and Coefficients from models
+
+
+## Create sorted R squared table
 
 
 ```r
-mod.list = list(lin.lm, log.lm, exp.lm, poly2.lm, poly3.lm)
-mod.names = c("linear","logarithmic", "exponential","polynomial2", "polynomial3")
-result.list = list()
-
-for (i in seq(mod.list)) {
-    stats = round(glance(mod.list[[i]]), 3)
-    coeff = as.data.frame(dust(mod.list[[i]]) %>% sprinkle(round = 3))
-    R.squared = stats$r.squared
-    Intercept = coeff[1, 'estimate']
-    Beta = coeff[2:nrow(coeff), 'estimate']
-    Predictor = coeff[2:nrow(coeff), 'term']
-    model.values = cbind(model = mod.names[i], Predictor, Beta, Intercept, R.squared)
-    result.list[[i]] = model.values
-     }
+## lists for collecting stats with r.squared value
+model.stats = list()
+model.r.squared = list()
 
 
-## collect all values  into table
+## loop for creating table with r squared values and models name 
 
-result.table = do.call(rbind, result.list)
-htmlTable(result.table)
-```
+for (i in seq(models)) {
+    fun.model = models[[ name.list[[i]] ]]
+    model.stats[[i]] = glance( fun.model(df$cumsum_revenue) [[1]] )        
+    model.r.squared[[i]]  = round(model.stats[[i]]$r.squared, 3)
+    results = data.table(cbind(Curve = unlist(name.list), 
+                            R.squared = unlist(model.r.squared)))
+}
 
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>model</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Predictor</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Beta</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Intercept</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>R.squared</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='text-align: center;'>linear</td>
-<td style='text-align: center;'>days</td>
-<td style='text-align: center;'>5.988</td>
-<td style='text-align: center;'>0.431</td>
-<td style='text-align: center;'>0.959</td>
-</tr>
-<tr>
-<td style='text-align: center;'>logarithmic</td>
-<td style='text-align: center;'>log(days)</td>
-<td style='text-align: center;'>28.274</td>
-<td style='text-align: center;'>-7.738</td>
-<td style='text-align: center;'>0.939</td>
-</tr>
-<tr>
-<td style='text-align: center;'>exponential</td>
-<td style='text-align: center;'>days</td>
-<td style='text-align: center;'>0.238</td>
-<td style='text-align: center;'>1.831</td>
-<td style='text-align: center;'>0.769</td>
-</tr>
-<tr>
-<td style='text-align: center;'>polynomial2</td>
-<td style='text-align: center;'>poly(days, 2)1</td>
-<td style='text-align: center;'>71.611</td>
-<td style='text-align: center;'>39.356</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='text-align: center;'>polynomial2</td>
-<td style='text-align: center;'>poly(days, 2)2</td>
-<td style='text-align: center;'>-11.641</td>
-<td style='text-align: center;'>39.356</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='text-align: center;'>polynomial3</td>
-<td style='text-align: center;'>poly(days, 3)1</td>
-<td style='text-align: center;'>71.611</td>
-<td style='text-align: center;'>39.356</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='text-align: center;'>polynomial3</td>
-<td style='text-align: center;'>poly(days, 3)2</td>
-<td style='text-align: center;'>-11.641</td>
-<td style='text-align: center;'>39.356</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: center;'>polynomial3</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>poly(days, 3)3</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.376</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>39.356</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.984</td>
-</tr>
-</tbody>
-</table>
-## Best model
+## sort results data.table by R.squared values
+r.squared.table = results[ order(-R.squared) ]
 
-
-```r
-result.df = data.frame(result.table)
-index.best = which.max(unique(result.df$R.squared))
-best.name = as.character(unique(result.df$model)[index.best])
-
-index.select = which(result.df$model %in% best.name)
-best = result.df[index.select, ]
-htmlTable(as.matrix(best))
+## show r.squared.table 
+htmlTable(r.squared.table)
 ```
 
 <table class='gmisc_table' style='border-collapse: collapse;' >
 <thead>
 <tr>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey;'> </th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>model</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Predictor</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Beta</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Intercept</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Curve</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>R.squared</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style='text-align: left;'>4</td>
-<td style='text-align: center;'>polynomial2</td>
-<td style='text-align: center;'>poly(days, 2)1</td>
-<td style='text-align: center;'>71.611</td>
-<td style='text-align: center;'>39.356</td>
+<td style='text-align: left;'>1</td>
+<td style='text-align: center;'>polynomial_2</td>
 <td style='text-align: center;'>0.984</td>
 </tr>
 <tr>
+<td style='text-align: left;'>2</td>
+<td style='text-align: center;'>polynomial_3</td>
+<td style='text-align: center;'>0.984</td>
+</tr>
+<tr>
+<td style='text-align: left;'>3</td>
+<td style='text-align: center;'>linear</td>
+<td style='text-align: center;'>0.959</td>
+</tr>
+<tr>
+<td style='text-align: left;'>4</td>
+<td style='text-align: center;'>logarithmic</td>
+<td style='text-align: center;'>0.939</td>
+</tr>
+<tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>5</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>polynomial2</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>poly(days, 2)2</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>-11.641</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>39.356</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.984</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>exponential</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>0.769</td>
 </tr>
 </tbody>
 </table>
 
+```r
+kable(head(iris), format = "html")
+```
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Sepal.Length </th>
+   <th style="text-align:right;"> Sepal.Width </th>
+   <th style="text-align:right;"> Petal.Length </th>
+   <th style="text-align:right;"> Petal.Width </th>
+   <th style="text-align:left;"> Species </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 5.1 </td>
+   <td style="text-align:right;"> 3.5 </td>
+   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4.9 </td>
+   <td style="text-align:right;"> 3.0 </td>
+   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4.7 </td>
+   <td style="text-align:right;"> 3.2 </td>
+   <td style="text-align:right;"> 1.3 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4.6 </td>
+   <td style="text-align:right;"> 3.1 </td>
+   <td style="text-align:right;"> 1.5 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 3.6 </td>
+   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5.4 </td>
+   <td style="text-align:right;"> 3.9 </td>
+   <td style="text-align:right;"> 1.7 </td>
+   <td style="text-align:right;"> 0.4 </td>
+   <td style="text-align:left;"> setosa </td>
+  </tr>
+</tbody>
+</table>
+
+## Fit campaigns to the best function
 
 
 
-
-
+```r
+## best function index
+#best.index = which.max(results$R.squared)
+#
+### select campaigns from data
+#campaigns = df[, grep("c[0-9]", names(df)), with = F]
+#
+#models = 
+#
+#for (i in seq(campaigns)) {
+#
+#    # assign model coefficients and statistics 
+#    mod.val = models[[ names(models)[i] ]] [[1]]
+#
+#    # assign prediction values
+#    pred.val = models[[ names(models)[i] ]] [[2]]
+#
+#    # assign models name into list
+#    name = gsub(".\\.", "", names(models)[i])
+#    name.list[[i]] = name
+#
+#    # set the max ylim value
+#    not.infinite = pred.val[!is.infinite(pred.val)]
+#    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
+#
+#    # set the min ylim value
+#    not.infinite = pred.val[!is.infinite(pred.val)]
+#    ylim.min = min(not.infinite)
+#
+#    # extrapolation plot
+#    plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
+#         ylab = "Cumulative campaign revenue", xlab="Number of days", 
+#         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
+#         xlim=c(0,60), col = '#FF00007F', lwd=4) 
+#
+#    # add grid
+#    grid(NA, NULL)
+#
+#    # add points from original data
+#    points(df$days, df$sum, col="#0000FF7F", pch = 16, cex = 1.8)
+#
+#    # modificate the plot axis
+#    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
+#
+#    # add legend to a plot
+#    legend("topright", bty="n", 
+#           legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
+#           as.expression(bquote(
+#           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
+#           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
+#           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
+#           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
+#
+#    # save every plot into list 'plots'
+#    plots[[i]] = recordPlot()
+#
+#}   
+```
 
