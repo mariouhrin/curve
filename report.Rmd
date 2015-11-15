@@ -19,13 +19,16 @@ df <- fread("./sample_data.csv")
 
 ## attribute description simple table
 meaning <- c("number of campaign", "number of days", "Cumulative sum of campaigns revenue")
-features <- c("c1/c2/c3","days", "cumsum_revenue") 
-table.df = cbind(features, meaning)
-htmlTable(table.df)
+attribute <- c("c1/c2/c3","days", "cumsum_revenue") 
+table.df = cbind(attribute, meaning)
+htmlTable(table.df, align='c|c')
 
+kable(table.df, format = "markdown", align="c")
 
 ## show data
-htmlTable(df)
+htmlTable(df, align='c|c|c|c|c')
+
+kable(df, format = "markdown", align="c")
 
 ```
 
@@ -250,7 +253,6 @@ r.squared.table = results[ order(-R.squared) ]
 ## show r.squared.table 
 htmlTable(r.squared.table)
 
-kable(head(iris), format = "html")
 
 
 ```

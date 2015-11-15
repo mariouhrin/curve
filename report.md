@@ -20,37 +20,52 @@ df <- fread("./sample_data.csv")
 
 ## attribute description simple table
 meaning <- c("number of campaign", "number of days", "Cumulative sum of campaigns revenue")
-features <- c("c1/c2/c3","days", "cumsum_revenue") 
-table.df = cbind(features, meaning)
-htmlTable(table.df)
+attribute <- c("c1/c2/c3","days", "cumsum_revenue") 
+table.df = cbind(attribute, meaning)
+htmlTable(table.df, align='c|c')
 ```
 
 <table class='gmisc_table' style='border-collapse: collapse;' >
 <thead>
 <tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>features</th>
+<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>attribute</th>
 <th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style='text-align: center;'>c1/c2/c3</td>
+<td style='border-right: 1px solid black; text-align: center;'>c1/c2/c3</td>
 <td style='text-align: center;'>number of campaign</td>
 </tr>
 <tr>
-<td style='text-align: center;'>days</td>
+<td style='border-right: 1px solid black; text-align: center;'>days</td>
 <td style='text-align: center;'>number of days</td>
 </tr>
 <tr>
-<td style='border-bottom: 2px solid grey; text-align: center;'>cumsum_revenue</td>
+<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>cumsum_revenue</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>Cumulative sum of campaigns revenue</td>
 </tr>
 </tbody>
 </table>
 
 ```r
+kable(head(iris), format = "markdown", align="c")
+```
+
+
+
+| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species |
+|:------------:|:-----------:|:------------:|:-----------:|:-------:|
+|     5.1      |     3.5     |     1.4      |     0.2     | setosa  |
+|     4.9      |     3.0     |     1.4      |     0.2     | setosa  |
+|     4.7      |     3.2     |     1.3      |     0.2     | setosa  |
+|     4.6      |     3.1     |     1.5      |     0.2     | setosa  |
+|     5.0      |     3.6     |     1.4      |     0.2     | setosa  |
+|     5.4      |     3.9     |     1.7      |     0.4     | setosa  |
+
+```r
 ## show data
-htmlTable(df)
+htmlTable(df, align='c|c|c|c|c')
 ```
 
 <table class='gmisc_table' style='border-collapse: collapse;' >
@@ -67,98 +82,98 @@ htmlTable(df)
 <tbody>
 <tr>
 <td style='text-align: left;'>1</td>
-<td style='text-align: center;'>1</td>
-<td style='text-align: center;'>5</td>
-<td style='text-align: center;'>5</td>
-<td style='text-align: center;'>1</td>
+<td style='border-right: 1px solid black; text-align: center;'>1</td>
+<td style='border-right: 1px solid black; text-align: center;'>5</td>
+<td style='border-right: 1px solid black; text-align: center;'>5</td>
+<td style='border-right: 1px solid black; text-align: center;'>1</td>
 <td style='text-align: center;'>3.67</td>
 </tr>
 <tr>
 <td style='text-align: left;'>2</td>
-<td style='text-align: center;'>3</td>
-<td style='text-align: center;'>6</td>
-<td style='text-align: center;'>6</td>
-<td style='text-align: center;'>2</td>
+<td style='border-right: 1px solid black; text-align: center;'>3</td>
+<td style='border-right: 1px solid black; text-align: center;'>6</td>
+<td style='border-right: 1px solid black; text-align: center;'>6</td>
+<td style='border-right: 1px solid black; text-align: center;'>2</td>
 <td style='text-align: center;'>5</td>
 </tr>
 <tr>
 <td style='text-align: left;'>3</td>
-<td style='text-align: center;'>13.8</td>
-<td style='text-align: center;'>8</td>
-<td style='text-align: center;'>33</td>
-<td style='text-align: center;'>3</td>
+<td style='border-right: 1px solid black; text-align: center;'>13.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>8</td>
+<td style='border-right: 1px solid black; text-align: center;'>33</td>
+<td style='border-right: 1px solid black; text-align: center;'>3</td>
 <td style='text-align: center;'>18.27</td>
 </tr>
 <tr>
 <td style='text-align: left;'>4</td>
-<td style='text-align: center;'>20.8</td>
-<td style='text-align: center;'>18.8</td>
-<td style='text-align: center;'>37</td>
-<td style='text-align: center;'>4</td>
+<td style='border-right: 1px solid black; text-align: center;'>20.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>18.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>37</td>
+<td style='border-right: 1px solid black; text-align: center;'>4</td>
 <td style='text-align: center;'>25.53</td>
 </tr>
 <tr>
 <td style='text-align: left;'>5</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>25.8</td>
-<td style='text-align: center;'>42</td>
-<td style='text-align: center;'>5</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>25.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>42</td>
+<td style='border-right: 1px solid black; text-align: center;'>5</td>
 <td style='text-align: center;'>33.9</td>
 </tr>
 <tr>
 <td style='text-align: left;'>6</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>34.8</td>
-<td style='text-align: center;'>50</td>
-<td style='text-align: center;'>6</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>34.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>50</td>
+<td style='border-right: 1px solid black; text-align: center;'>6</td>
 <td style='text-align: center;'>42.4</td>
 </tr>
 <tr>
 <td style='text-align: left;'>7</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>41.8</td>
-<td style='text-align: center;'>57</td>
-<td style='text-align: center;'>7</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>41.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>57</td>
+<td style='border-right: 1px solid black; text-align: center;'>7</td>
 <td style='text-align: center;'>49.4</td>
 </tr>
 <tr>
 <td style='text-align: left;'>8</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>45.8</td>
-<td style='text-align: center;'>58</td>
-<td style='text-align: center;'>8</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>45.8</td>
+<td style='border-right: 1px solid black; text-align: center;'>58</td>
+<td style='border-right: 1px solid black; text-align: center;'>8</td>
 <td style='text-align: center;'>51.9</td>
 </tr>
 <tr>
 <td style='text-align: left;'>9</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>50.8</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>9</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>50.8</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>9</td>
 <td style='text-align: center;'>50.8</td>
 </tr>
 <tr>
 <td style='text-align: left;'>10</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>58.8</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>10</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>58.8</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>10</td>
 <td style='text-align: center;'>58.8</td>
 </tr>
 <tr>
 <td style='text-align: left;'>11</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>65.8</td>
-<td style='text-align: center;'></td>
-<td style='text-align: center;'>11</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>65.8</td>
+<td style='border-right: 1px solid black; text-align: center;'></td>
+<td style='border-right: 1px solid black; text-align: center;'>11</td>
 <td style='text-align: center;'>65.8</td>
 </tr>
 <tr>
 <td style='border-bottom: 2px solid grey; text-align: left;'>12</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'></td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'></td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>12</td>
+<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'></td>
+<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>66.8</td>
+<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'></td>
+<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>12</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
 </tr>
 </tbody>
@@ -220,18 +235,11 @@ polynomial_3 <- function (y) {
 }
 
 
-
 models = list("linear" = linear, 
               "logarithmic" = logarithmic,
               "exponential" = exponential, 
               "polynomial_2" = polynomial_2, 
               "polynomial_3" = polynomial_3)
-
-models$linear(df, df$cumsum_revenue, df$days, times)
-```
-
-```
-## Error in models$linear(df, df$cumsum_revenue, df$days, times): unused arguments (df$cumsum_revenue, df$days, times)
 ```
 
 ## Save curves plot into list
@@ -277,12 +285,16 @@ for (i in seq(models)) {
          ylab = "Cumulative campaign revenue", xlab="Number of days", 
          cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
          xlim=c(0,60), col = '#FF00007F', lwd=4) 
+
     # add grid
     grid(NA, NULL)
+
     # add points from original data
     points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.8)
+
     # modificate the plot axis
     axis(1, at=seq(0,60,10), labels=seq(0,60,10))
+
     # add legend to a plot
     legend("topright", bty="n", 
            legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
@@ -291,13 +303,14 @@ for (i in seq(models)) {
            pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
            lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
            merge = T, inset=c(-0.1, 0), y.intersp=1.5)
+
     # save every plot into list 'plots'
     plots[[i]] = recordPlot()
 }   
 ```
 
 ```r
-## assign models name into list 'plots'
+## assign model names into plots list
 names(plots) = unlist(name.list)
 ```
 
@@ -410,66 +423,6 @@ htmlTable(r.squared.table)
 <td style='border-bottom: 2px solid grey; text-align: center;'>exponential</td>
 <td style='border-bottom: 2px solid grey; text-align: center;'>0.769</td>
 </tr>
-</tbody>
-</table>
-
-```r
-kable(head(iris), format = "html")
-```
-
-<table>
- <thead>
-  <tr>
-   <th style="text-align:right;"> Sepal.Length </th>
-   <th style="text-align:right;"> Sepal.Width </th>
-   <th style="text-align:right;"> Petal.Length </th>
-   <th style="text-align:right;"> Petal.Width </th>
-   <th style="text-align:left;"> Species </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 5.1 </td>
-   <td style="text-align:right;"> 3.5 </td>
-   <td style="text-align:right;"> 1.4 </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 4.9 </td>
-   <td style="text-align:right;"> 3.0 </td>
-   <td style="text-align:right;"> 1.4 </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 4.7 </td>
-   <td style="text-align:right;"> 3.2 </td>
-   <td style="text-align:right;"> 1.3 </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 4.6 </td>
-   <td style="text-align:right;"> 3.1 </td>
-   <td style="text-align:right;"> 1.5 </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 5.0 </td>
-   <td style="text-align:right;"> 3.6 </td>
-   <td style="text-align:right;"> 1.4 </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 5.4 </td>
-   <td style="text-align:right;"> 3.9 </td>
-   <td style="text-align:right;"> 1.7 </td>
-   <td style="text-align:right;"> 0.4 </td>
-   <td style="text-align:left;"> setosa </td>
-  </tr>
 </tbody>
 </table>
 
