@@ -1,17 +1,18 @@
 
-# Curve fitting example
+# Curve fitting prediction example
 
 ```{r, message=F}
 library(htmlTable)
 library(broom)
 library(pixiedust)
 library(dplyr)
-library(hash)
+library(pander)
 library(data.table)
-options(scipen = 100000)
 ```
+<br>
 
 ## Show data
+
 ```{r, results='asis',echo=T,message=FALSE, warning=FALSE}
 
 ## read data 
@@ -21,16 +22,14 @@ df <- fread("./sample_data.csv")
 meaning <- c("number of campaign", "number of days", "Cumulative sum of campaigns revenue")
 attribute <- c("c1/c2/c3","days", "cumsum_revenue") 
 table.df = cbind(attribute, meaning)
-htmlTable(table.df, align='c|c')
-
 kable(table.df, format = "markdown", align="c")
 
 ## show data
-htmlTable(df, align='c|c|c|c|c')
-
 kable(df, format = "markdown", align="c")
 
 ```
+
+<br>
 
 ## Curve fitting functions
 
@@ -98,6 +97,8 @@ models = list("linear" = linear,
 
 ```
 
+<br>
+
 ## Save curves plot into list
 
 ```{r, fig.show='hide' }
@@ -141,30 +142,32 @@ for (i in seq(models)) {
     # extrapolation plot
     plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
          ylab = "Cumulative campaign revenue", xlab="Number of days", 
-         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
+         cex.lab=1.0, cex.main=1.1, ylim=c(ylim.min, ylim.max),
          xlim=c(0,60), col = '#FF00007F', lwd=4) 
 
     # add grid
     grid(NA, NULL)
 
     # add points from original data
-    points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.8)
+    points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.4)
 
     # modificate the plot axis
     axis(1, at=seq(0,60,10), labels=seq(0,60,10))
 
     # add legend to a plot
-    legend("topright", bty="n", 
+    legend("top",  
            legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
            as.expression(bquote(
            R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
            pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
-           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
-           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
+           lwd = 4, lty=c(1,0,0), cex = 0.7, pt.cex = 1.2, 
+           merge = T, y.intersp=2.0)
 
     # save every plot into list 'plots'
     plots[[i]] = recordPlot()
+
 }   
+
 
 ## assign model names into plots list
 names(plots) = unlist(name.list)
@@ -172,44 +175,54 @@ names(plots) = unlist(name.list)
 
 
 ```
+<br>
+
 
 ## Linear model
 
-```{r, fig.height = 6, fig.width=9}
+```{r, fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
 
 plots[["linear"]]
 
 ```
 
+<br>
+
 ## Logarithmic model
 
 
-```{r, fig.height = 6, fig.width=9}
+```{r, fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
 
 plots[["logarithmic"]]
 
 ```
 
+<br>
+
 ## Exponential model
 
 
-```{r, fig.height = 6, fig.width=9}
+```{r, fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
 
 plots[["exponential"]]
 
 ```
 
+<br>
+
 ## Polynomial (quadratic)
 
-```{r, fig.height = 6, fig.width=9}
+```{r, fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
 
 plots[["polynomial_2"]]
 
 ```
 
+<br>
+
 ## Polynomial (cubic)
 
-```{r, fig.height = 6, fig.width=9}
+```{r, fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
 
 plots[["polynomial_3"]]
 
@@ -228,7 +241,9 @@ htmlTable(coeff)
 
 ```
 
-## Create sorted R squared table
+<br>
+
+## Sorted table by R squared value
 
 ```{r, results='asis',echo=T,warning=F}
 
@@ -243,7 +258,7 @@ for (i in seq(models)) {
     fun.model = models[[ name.list[[i]] ]]
     model.stats[[i]] = glance( fun.model(df$cumsum_revenue) [[1]] )        
     model.r.squared[[i]]  = round(model.stats[[i]]$r.squared, 3)
-    results = data.table(cbind(Curve = unlist(name.list), 
+    results = data.table(cbind(Funtion = unlist(name.list), 
                             R.squared = unlist(model.r.squared)))
 }
 
@@ -251,73 +266,89 @@ for (i in seq(models)) {
 r.squared.table = results[ order(-R.squared) ]
 
 ## show r.squared.table 
-htmlTable(r.squared.table)
-
+kable(r.squared.table, align='c', format='markdown', row.names=T)
 
 
 ```
 
+<br>
+
 ## Fit campaigns to the best function
 
 
-```{r}
+```{r, results='asis', fig.height = 5, fig.width=7, fig.align='center', dpi = 300}
+
+## select campaigns from data
+campaigns = df[, grep("c[0-9]", names(df)), with = F]
 
 ## best function index
-#best.index = which.max(results$R.squared)
-#
-### select campaigns from data
-#campaigns = df[, grep("c[0-9]", names(df)), with = F]
-#
-#models = 
-#
-#for (i in seq(campaigns)) {
-#
-#    # assign model coefficients and statistics 
-#    mod.val = models[[ names(models)[i] ]] [[1]]
-#
-#    # assign prediction values
-#    pred.val = models[[ names(models)[i] ]] [[2]]
-#
-#    # assign models name into list
-#    name = gsub(".\\.", "", names(models)[i])
-#    name.list[[i]] = name
-#
-#    # set the max ylim value
-#    not.infinite = pred.val[!is.infinite(pred.val)]
-#    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
-#
-#    # set the min ylim value
-#    not.infinite = pred.val[!is.infinite(pred.val)]
-#    ylim.min = min(not.infinite)
-#
-#    # extrapolation plot
-#    plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
-#         ylab = "Cumulative campaign revenue", xlab="Number of days", 
-#         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
-#         xlim=c(0,60), col = '#FF00007F', lwd=4) 
-#
-#    # add grid
-#    grid(NA, NULL)
-#
-#    # add points from original data
-#    points(df$days, df$sum, col="#0000FF7F", pch = 16, cex = 1.8)
-#
-#    # modificate the plot axis
-#    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
-#
-#    # add legend to a plot
-#    legend("topright", bty="n", 
-#           legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
-#           as.expression(bquote(
-#           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
-#           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
-#           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
-#           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
-#
-#    # save every plot into list 'plots'
-#    plots[[i]] = recordPlot()
-#
-#}   
+best.index = which.max(results$R.squared)
+
+## best function 
+best.fun = models[[best.index]]
+
+
+## campaigns curve fitting by best function
+
+for (i in seq(campaigns)) {
+
+    # assign single campaign into camp
+    camp = campaigns[[i]]
+
+    # campaign name
+    name = names(campaigns)[i]
+
+    # assign model coefficients and statistics 
+    mod.val = best.fun(camp) [[1]]
+
+    # assign prediction values
+    pred.val = best.fun(camp) [[2]]
+
+    # set the max ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
+
+    # set the min ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.min = min(not.infinite)
+
+    # increase space between plots
+    cat("<br/> <br/> <br/>")
+
+    # predicted revenue head-line 
+    pred = round(max(pred.val), 2)
+    head = paste('Predicted revenue for campaign', name, "on 60th day is",
+                pred, "€")
+    pandoc.header(head, 4)
+    pandoc.horizontal.rule()
+    pandoc.horizontal.rule()
+
+    
+    # extrapolation plot
+    plot(times, pred.val, xaxt='n', type="l", main=paste("Campaign", name), 
+         ylab = "Predicted campaign revenue", xlab="Number of days", 
+         cex.lab=1.0, cex.main=1.1, ylim=c(ylim.min, ylim.max),
+         xlim=c(0,60), col = '#FF00007F', lwd=4) 
+
+    # add grid
+    grid(NA, NULL)
+
+    # add points from original data
+    points(df$days, camp, col="#0000FF7F", pch = 16, cex = 1.4)
+
+    # modificate the plot axis
+    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
+
+    # add legend to a plot
+    legend("top", 
+           legend=c(paste("Estimation by",  name.list[[best.index]],"function"),
+                    "Campaign revenue", 
+           as.expression(bquote(
+           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
+           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
+           lwd = 4, lty=c(1,0,0), cex = 0.7, pt.cex = 1.2, 
+           merge = T, y.intersp=1.2)
+}   
 
 ```
 

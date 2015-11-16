@@ -1,5 +1,5 @@
 
-# Curve fitting example
+# Curve fitting prediction example
 
 
 ```r
@@ -7,12 +7,13 @@ library(htmlTable)
 library(broom)
 library(pixiedust)
 library(dplyr)
-library(hash)
+library(pander)
 library(data.table)
-options(scipen = 100000)
 ```
+<br>
 
 ## Show data
+
 
 ```r
 ## read data 
@@ -22,33 +23,6 @@ df <- fread("./sample_data.csv")
 meaning <- c("number of campaign", "number of days", "Cumulative sum of campaigns revenue")
 attribute <- c("c1/c2/c3","days", "cumsum_revenue") 
 table.df = cbind(attribute, meaning)
-htmlTable(table.df, align='c|c')
-```
-
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>attribute</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='border-right: 1px solid black; text-align: center;'>c1/c2/c3</td>
-<td style='text-align: center;'>number of campaign</td>
-</tr>
-<tr>
-<td style='border-right: 1px solid black; text-align: center;'>days</td>
-<td style='text-align: center;'>number of days</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>cumsum_revenue</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>Cumulative sum of campaigns revenue</td>
-</tr>
-</tbody>
-</table>
-
-```r
 kable(table.df, format = "markdown", align="c")
 ```
 
@@ -62,121 +36,6 @@ kable(table.df, format = "markdown", align="c")
 
 ```r
 ## show data
-htmlTable(df, align='c|c|c|c|c')
-```
-
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey;'> </th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c1</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c2</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>c3</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>days</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>cumsum_revenue</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='text-align: left;'>1</td>
-<td style='border-right: 1px solid black; text-align: center;'>1</td>
-<td style='border-right: 1px solid black; text-align: center;'>5</td>
-<td style='border-right: 1px solid black; text-align: center;'>5</td>
-<td style='border-right: 1px solid black; text-align: center;'>1</td>
-<td style='text-align: center;'>3.67</td>
-</tr>
-<tr>
-<td style='text-align: left;'>2</td>
-<td style='border-right: 1px solid black; text-align: center;'>3</td>
-<td style='border-right: 1px solid black; text-align: center;'>6</td>
-<td style='border-right: 1px solid black; text-align: center;'>6</td>
-<td style='border-right: 1px solid black; text-align: center;'>2</td>
-<td style='text-align: center;'>5</td>
-</tr>
-<tr>
-<td style='text-align: left;'>3</td>
-<td style='border-right: 1px solid black; text-align: center;'>13.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>8</td>
-<td style='border-right: 1px solid black; text-align: center;'>33</td>
-<td style='border-right: 1px solid black; text-align: center;'>3</td>
-<td style='text-align: center;'>18.27</td>
-</tr>
-<tr>
-<td style='text-align: left;'>4</td>
-<td style='border-right: 1px solid black; text-align: center;'>20.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>18.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>37</td>
-<td style='border-right: 1px solid black; text-align: center;'>4</td>
-<td style='text-align: center;'>25.53</td>
-</tr>
-<tr>
-<td style='text-align: left;'>5</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>25.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>42</td>
-<td style='border-right: 1px solid black; text-align: center;'>5</td>
-<td style='text-align: center;'>33.9</td>
-</tr>
-<tr>
-<td style='text-align: left;'>6</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>34.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>50</td>
-<td style='border-right: 1px solid black; text-align: center;'>6</td>
-<td style='text-align: center;'>42.4</td>
-</tr>
-<tr>
-<td style='text-align: left;'>7</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>41.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>57</td>
-<td style='border-right: 1px solid black; text-align: center;'>7</td>
-<td style='text-align: center;'>49.4</td>
-</tr>
-<tr>
-<td style='text-align: left;'>8</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>45.8</td>
-<td style='border-right: 1px solid black; text-align: center;'>58</td>
-<td style='border-right: 1px solid black; text-align: center;'>8</td>
-<td style='text-align: center;'>51.9</td>
-</tr>
-<tr>
-<td style='text-align: left;'>9</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>50.8</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>9</td>
-<td style='text-align: center;'>50.8</td>
-</tr>
-<tr>
-<td style='text-align: left;'>10</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>58.8</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>10</td>
-<td style='text-align: center;'>58.8</td>
-</tr>
-<tr>
-<td style='text-align: left;'>11</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>65.8</td>
-<td style='border-right: 1px solid black; text-align: center;'></td>
-<td style='border-right: 1px solid black; text-align: center;'>11</td>
-<td style='text-align: center;'>65.8</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>12</td>
-<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'></td>
-<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>66.8</td>
-<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'></td>
-<td style='border-bottom: 2px solid grey; border-right: 1px solid black; text-align: center;'>12</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>66.8</td>
-</tr>
-</tbody>
-</table>
-
-```r
 kable(df, format = "markdown", align="c")
 ```
 
@@ -196,6 +55,8 @@ kable(df, format = "markdown", align="c")
 |  NA  | 58.8 | NA |  10  |     58.80      |
 |  NA  | 65.8 | NA |  11  |     65.80      |
 |  NA  | 66.8 | NA |  12  |     66.80      |
+
+<br>
 
 ## Curve fitting functions
 
@@ -260,6 +121,8 @@ models = list("linear" = linear,
               "polynomial_3" = polynomial_3)
 ```
 
+<br>
+
 ## Save curves plot into list
 
 
@@ -301,29 +164,30 @@ for (i in seq(models)) {
     # extrapolation plot
     plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
          ylab = "Cumulative campaign revenue", xlab="Number of days", 
-         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
+         cex.lab=1.0, cex.main=1.1, ylim=c(ylim.min, ylim.max),
          xlim=c(0,60), col = '#FF00007F', lwd=4) 
 
     # add grid
     grid(NA, NULL)
 
     # add points from original data
-    points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.8)
+    points(df$days, df$cumsum_revenue, col="#0000FF7F", pch = 16, cex = 1.4)
 
     # modificate the plot axis
     axis(1, at=seq(0,60,10), labels=seq(0,60,10))
 
     # add legend to a plot
-    legend("topright", bty="n", 
+    legend("top",  
            legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
            as.expression(bquote(
            R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
            pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
-           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
-           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
+           lwd = 4, lty=c(1,0,0), cex = 0.7, pt.cex = 1.2, 
+           merge = T, y.intersp=2.0)
 
     # save every plot into list 'plots'
     plots[[i]] = recordPlot()
+
 }   
 ```
 
@@ -331,6 +195,8 @@ for (i in seq(models)) {
 ## assign model names into plots list
 names(plots) = unlist(name.list)
 ```
+<br>
+
 
 ## Linear model
 
@@ -339,7 +205,9 @@ names(plots) = unlist(name.list)
 plots[["linear"]]
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+<img src="figure/unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
+
+<br>
 
 ## Logarithmic model
 
@@ -349,7 +217,9 @@ plots[["linear"]]
 plots[["logarithmic"]]
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+<img src="figure/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
+
+<br>
 
 ## Exponential model
 
@@ -359,7 +229,9 @@ plots[["logarithmic"]]
 plots[["exponential"]]
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+<img src="figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+
+<br>
 
 ## Polynomial (quadratic)
 
@@ -368,7 +240,9 @@ plots[["exponential"]]
 plots[["polynomial_2"]]
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+<img src="figure/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
+
+<br>
 
 ## Polynomial (cubic)
 
@@ -377,11 +251,13 @@ plots[["polynomial_2"]]
 plots[["polynomial_3"]]
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+<img src="figure/unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" />
 
 
 
-## Create sorted R squared table
+<br>
+
+## Sorted table by R squared value
 
 
 ```r
@@ -396,7 +272,7 @@ for (i in seq(models)) {
     fun.model = models[[ name.list[[i]] ]]
     model.stats[[i]] = glance( fun.model(df$cumsum_revenue) [[1]] )        
     model.r.squared[[i]]  = round(model.stats[[i]]$r.squared, 3)
-    results = data.table(cbind(Curve = unlist(name.list), 
+    results = data.table(cbind(Funtion = unlist(name.list), 
                             R.squared = unlist(model.r.squared)))
 }
 
@@ -404,106 +280,116 @@ for (i in seq(models)) {
 r.squared.table = results[ order(-R.squared) ]
 
 ## show r.squared.table 
-htmlTable(r.squared.table)
+kable(r.squared.table, align='c', format='markdown', row.names=T)
 ```
 
-<table class='gmisc_table' style='border-collapse: collapse;' >
-<thead>
-<tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey;'> </th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Curve</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>R.squared</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style='text-align: left;'>1</td>
-<td style='text-align: center;'>polynomial_2</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='text-align: left;'>2</td>
-<td style='text-align: center;'>polynomial_3</td>
-<td style='text-align: center;'>0.984</td>
-</tr>
-<tr>
-<td style='text-align: left;'>3</td>
-<td style='text-align: center;'>linear</td>
-<td style='text-align: center;'>0.959</td>
-</tr>
-<tr>
-<td style='text-align: left;'>4</td>
-<td style='text-align: center;'>logarithmic</td>
-<td style='text-align: center;'>0.939</td>
-</tr>
-<tr>
-<td style='border-bottom: 2px solid grey; text-align: left;'>5</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>exponential</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>0.769</td>
-</tr>
-</tbody>
-</table>
+
+
+|   |   Funtion    | R.squared |
+|:--|:------------:|:---------:|
+|1  | polynomial_2 |   0.984   |
+|2  | polynomial_3 |   0.984   |
+|3  |    linear    |   0.959   |
+|4  | logarithmic  |   0.939   |
+|5  | exponential  |   0.769   |
+
+<br>
 
 ## Fit campaigns to the best function
 
 
 
 ```r
+## select campaigns from data
+campaigns = df[, grep("c[0-9]", names(df)), with = F]
+
 ## best function index
-#best.index = which.max(results$R.squared)
-#
-### select campaigns from data
-#campaigns = df[, grep("c[0-9]", names(df)), with = F]
-#
-#models = 
-#
-#for (i in seq(campaigns)) {
-#
-#    # assign model coefficients and statistics 
-#    mod.val = models[[ names(models)[i] ]] [[1]]
-#
-#    # assign prediction values
-#    pred.val = models[[ names(models)[i] ]] [[2]]
-#
-#    # assign models name into list
-#    name = gsub(".\\.", "", names(models)[i])
-#    name.list[[i]] = name
-#
-#    # set the max ylim value
-#    not.infinite = pred.val[!is.infinite(pred.val)]
-#    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
-#
-#    # set the min ylim value
-#    not.infinite = pred.val[!is.infinite(pred.val)]
-#    ylim.min = min(not.infinite)
-#
-#    # extrapolation plot
-#    plot(times, pred.val, xaxt='n', type="l", main=paste(name, "curve"), 
-#         ylab = "Cumulative campaign revenue", xlab="Number of days", 
-#         cex.lab=1.5, cex.main=1.5, ylim=c(ylim.min, ylim.max),
-#         xlim=c(0,60), col = '#FF00007F', lwd=4) 
-#
-#    # add grid
-#    grid(NA, NULL)
-#
-#    # add points from original data
-#    points(df$days, df$sum, col="#0000FF7F", pch = 16, cex = 1.8)
-#
-#    # modificate the plot axis
-#    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
-#
-#    # add legend to a plot
-#    legend("topright", bty="n", 
-#           legend=c(paste("Estimation by", name, "function"), "Campaign revenue", 
-#           as.expression(bquote(
-#           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
-#           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
-#           lwd = 4, lty=c(1,0,0), cex = 1.2, pt.cex = 1.8, 
-#           merge = T, inset=c(-0.1, 0), y.intersp=1.5)
-#
-#    # save every plot into list 'plots'
-#    plots[[i]] = recordPlot()
-#
-#}   
+best.index = which.max(results$R.squared)
+
+## best function 
+best.fun = models[[best.index]]
+
+
+## campaigns curve fitting by best function
+
+for (i in seq(campaigns)) {
+
+    # assign single campaign into camp
+    camp = campaigns[[i]]
+
+    # campaign name
+    name = names(campaigns)[i]
+
+    # assign model coefficients and statistics 
+    mod.val = best.fun(camp) [[1]]
+
+    # assign prediction values
+    pred.val = best.fun(camp) [[2]]
+
+    # set the max ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.max = max(not.infinite) + (max(not.infinite) + (-min(not.infinite)))/3
+
+    # set the min ylim value
+    not.infinite = pred.val[!is.infinite(pred.val)]
+    ylim.min = min(not.infinite)
+
+    # increase space between plots
+    cat("<br/> <br/> <br/>")
+
+    # predicted revenue head-line 
+    pred = round(max(pred.val), 2)
+    head = paste('Predicted revenue for campaign', name, "on 60th day is",
+                pred, "€")
+    pandoc.header(head, 4)
+    pandoc.horizontal.rule()
+    pandoc.horizontal.rule()
+
+    
+    # extrapolation plot
+    plot(times, pred.val, xaxt='n', type="l", main=paste("Campaign", name), 
+         ylab = "Predicted campaign revenue", xlab="Number of days", 
+         cex.lab=1.0, cex.main=1.1, ylim=c(ylim.min, ylim.max),
+         xlim=c(0,60), col = '#FF00007F', lwd=4) 
+
+    # add grid
+    grid(NA, NULL)
+
+    # add points from original data
+    points(df$days, camp, col="#0000FF7F", pch = 16, cex = 1.4)
+
+    # modificate the plot axis
+    axis(1, at=seq(0,60,10), labels=seq(0,60,10))
+
+    # add legend to a plot
+    legend("top", 
+           legend=c(paste("Estimation by",  name.list[[best.index]],"function"),
+                    "Campaign revenue", 
+           as.expression(bquote(
+           R^2==.(format(summary(mod.val)$r.squared, digits=3))))),
+           pch=c(NA,16),col=c("#FF00007F", "#0000FF7F"), 
+           lwd = 4, lty=c(1,0,0), cex = 0.7, pt.cex = 1.2, 
+           merge = T, y.intersp=1.2)
+}   
 ```
+
+<br/> <br/> <br/>
+#### Predicted revenue for campaign c1 on 60th day is 4544.55 €
+
+---
+
+---
+<img src="figure/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /><br/> <br/> <br/>
+#### Predicted revenue for campaign c2 on 60th day is 280.11 €
+
+---
+
+---
+<img src="figure/unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /><br/> <br/> <br/>
+#### Predicted revenue for campaign c3 on 60th day is 60.15 €
+
+---
+
+---
+<img src="figure/unnamed-chunk-12-3.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
 
