@@ -272,7 +272,7 @@ for (i in seq(models)) {
     fun.model = models[[ name.list[[i]] ]]
     model.stats[[i]] = glance( fun.model(df$cumsum_revenue) [[1]] )        
     model.r.squared[[i]]  = round(model.stats[[i]]$r.squared, 3)
-    results = data.table(cbind(Funtion = unlist(name.list), 
+    results = data.table(cbind(Function = unlist(name.list), 
                             R.squared = unlist(model.r.squared)))
 }
 
@@ -285,7 +285,7 @@ kable(r.squared.table, align='c', format='markdown', row.names=T)
 
 
 
-|   |   Funtion    | R.squared |
+|   |   Function   | R.squared |
 |:--|:------------:|:---------:|
 |1  | polynomial_2 |   0.984   |
 |2  | polynomial_3 |   0.984   |

@@ -538,7 +538,7 @@ for (i in seq(models)) {
     fun.model = models[[ name.list[[i]] ]]
     model.stats[[i]] = glance( fun.model(df$cumsum_revenue) [[1]] )        
     model.r.squared[[i]]  = round(model.stats[[i]]$r.squared, 3)
-    results = data.table(cbind(Funtion = unlist(name.list), 
+    results = data.table(cbind(Function = unlist(name.list), 
                             R.squared = unlist(model.r.squared)))
 }
 
@@ -552,7 +552,7 @@ kable(r.squared.table, align=&#39;c&#39;, format=&#39;markdown&#39;, row.names=T
 <table><thead>
 <tr>
 <th align="left"></th>
-<th align="center">Funtion</th>
+<th align="center">Function</th>
 <th align="center">R.squared</th>
 </tr>
 </thead><tbody>
