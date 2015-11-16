@@ -338,7 +338,7 @@ for (i in seq(campaigns)) {
     cat("<br/> <br/> <br/>")
 
     # predicted revenue head-line 
-    pred = round(max(pred.val), 2)
+    pred = round(tail(pred.val, 1), 2)
     head = paste('Predicted revenue for campaign', name, "on 60th day is",
                 pred, "€")
     pandoc.header(head, 4)
@@ -386,7 +386,7 @@ for (i in seq(campaigns)) {
 
 ---
 <img src="figure/unnamed-chunk-12-2.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /><br/> <br/> <br/>
-#### Predicted revenue for campaign c3 on 60th day is 60.15 €
+#### Predicted revenue for campaign c3 on 60th day is -2075.89 €
 
 ---
 

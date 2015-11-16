@@ -316,7 +316,7 @@ for (i in seq(campaigns)) {
     cat("<br/> <br/> <br/>")
 
     # predicted revenue head-line 
-    pred = round(max(pred.val), 2)
+    pred = round(tail(pred.val, 1), 2)
     head = paste('Predicted revenue for campaign', name, "on 60th day is",
                 pred, "€")
     pandoc.header(head, 4)
